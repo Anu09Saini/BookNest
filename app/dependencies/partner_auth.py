@@ -8,12 +8,14 @@ from app.database import fetch_one
 # identifies the partner.
 api_key_header = APIKeyHeader(
   name="X-API-Key",
+  scheme_name="Partner API Key",
   auto_error=False,
 )
 
-#the secret used for verification of partner
+# Secret used to verify the partner.
 api_secret_header = APIKeyHeader(
   name="X-API-Secret",
+  scheme_name="Partner API Secret",
   auto_error=False,
 )
 

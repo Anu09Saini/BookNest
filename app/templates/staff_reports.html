@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Library Reports | BookNest</title>
+	<link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+	<header class="navbar">
+		<a href="/catalogue" class="brand">
+			<span class="brand-icon">B</span> BookNest
+		</a>
+		<nav>
+			<a href="/staff/dashboard" class="nav-link">Dashboard</a>
+			<a href="/staff/books/new" class="nav-link">Add New Book</a>
+			<form action="/staff/logout" method="post">
+				<button type="submit" class="nav-button">Log out</button>
+			</form>
+		</nav>
+	</header>
+
+	<main class="container">
+		<section class="hero">
+			<p class="eyebrow">LIBRARY ANALYTICS</p>
+			<h1>Library Reports</h1>
+			<p class="hero-description">
+				Monitor overdue loans, borrowing trends, fines,
+				and book-copy availability across branches.
+			</p>
+		</section>
+
+		<section class="dashboard-section">
+			<h2>Overdue Loans</h2>
+			<p>Loans that have passed their due date and have not been returned.</p>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Loan ID</th>
+							<th>Member</th>
+							<th>Book</th>
+							<th>Branch</th>
+							<th>Due Date</th>
+							<th>Days Overdue</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for loan in overdue_loans %}
+						<tr>
+							<td>{{ loan.loan_id }}</td>
+							<td>{{ loan.member_name }}</td>
+							<td>{{ loan.book_title }}</td>
+							<td>{{ loan.branch_name }}</td>
+							<td>{{ loan.due_date }}</td>
+							<td>
+								<span class="status overdue">
+									{{ loan.overdue_days }}
+								</span>
+							</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="6">No overdue loans.</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="dashboard-section">
+			<h2>Most Borrowed Books</h2>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Book ID</th>
+							<th>Book Title</th>
+							<th>Total Checkouts</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for book in popular_books %}
+						<tr>
+							<td>{{ book.book_id }}</td>
+							<td>{{ book.title }}</td>
+							<td>{{ book.borrow_count }}</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="3">No borrowing data available.</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="dashboard-section">
+			<h2>Outstanding Fines</h2>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Fine ID</th>
+							<th>Loan ID</th>
+							<th>Member</th>
+							<th>Book</th>
+							<th>Original Fine</th>
+							<th>Paid</th>
+							<th>Balance Due</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for fine in outstanding_fines %}
+						<tr>
+							<td>{{ fine.fine_id }}</td>
+							<td>{{ fine.loan_id }}</td>
+							<td>{{ fine.member_name }}</td>
+							<td>{{ fine.book_title }}</td>
+							<td>{{ "%.2f"|format(fine.original_amount) }}</td>
+							<td>{{ "%.2f"|format(fine.amount_paid) }}</td>
+							<td>{{ "%.2f"|format(fine.balance) }}</td>
+							<td>{{ fine.status|capitalize }}</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="8">No outstanding fines.</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="dashboard-section">
+			<h2>Book Copies per Branch</h2>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Branch</th>
+							<th>Total Copies</th>
+							<th>Available</th>
+							<th>Loaned</th>
+							<th>Lost</th>
+							<th>Maintenance</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for branch in branch_copies %}
+						<tr>
+							<td>{{ branch.branch_name }}</td>
+							<td>{{ branch.total_copies }}</td>
+							<td>{{ branch.available_copies }}</td>
+							<td>{{ branch.loaned_copies }}</td>
+							<td>{{ branch.lost_copies }}</td>
+							<td>{{ branch.maintenance_copies }}</td>
+						</tr>
+						{% else %}
+						<tr>
+							<td colspan="6">No branch data available.</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<p>
+			<a href="/staff/dashboard" class="nav-link">
+				&larr; Back to Dashboard
+			</a>
+		</p>
+	</main>
+
+	<footer class="footer">
+		<p>BookNest Library Management System</p>
+	</footer>
+</body>
+
+</html>

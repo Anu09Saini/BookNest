@@ -47,10 +47,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-
-# # Partner ID: 1
-# Partner name: Anu
-# API key: bn_live_LPk02ehW5_V-tybm7CJDKNBP8YYJQTQK
-# API secret: OtJlp7w2OGDl8yQ8FoZ7SuOMd9yLSuDyPGFJkr6iVGPe3reWIeBFXppFcuh-DJCn

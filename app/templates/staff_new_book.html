@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Add New Book | BookNest</title>
+	<link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+	<header class="navbar">
+		<a href="/catalogue" class="brand">
+			<span class="brand-icon">B</span> BookNest
+		</a>
+		<nav>
+			<a href="/staff/dashboard" class="nav-link">Dashboard</a>
+			<a href="/staff/reports" class="nav-link">Reports</a>
+			<form action="/staff/logout" method="post">
+				<button type="submit" class="nav-button">Log out</button>
+			</form>
+		</nav>
+	</header>
+
+	<main class="container">
+		<section class="hero">
+			<p class="eyebrow">CATALOGUE MANAGEMENT</p>
+			<h1>Add a New Book</h1>
+			<p class="hero-description">
+				Register a title in the BookNest catalogue.
+			</p>
+		</section>
+
+		{% if request.query_params.get("message") %}
+		<div class="success-message">
+			{{ request.query_params.get("message") }}
+		</div>
+		{% endif %}
+
+		{% if error %}
+		<div class="error-message">{{ error }}</div>
+		{% endif %}
+
+		<section class="dashboard-section">
+			<div class="staff-form-card">
+				<form action="/staff/books/new" method="post" class="member-form">
+
+					<label for="title">Book Title *</label>
+					<input id="title" name="title" type="text" maxlength="255" value="{{ title }}" required>
+
+					<label for="isbn">ISBN *</label>
+					<input id="isbn" name="isbn" type="text" maxlength="20" value="{{ isbn }}" required>
+
+					<label for="publication_year">Publication Year *</label>
+					<input id="publication_year" name="publication_year" type="number" min="1" max="{{ today_year }}"
+						value="{{ publication_year }}" required>
+
+					<button type="submit" class="form-button">
+						Add Book
+					</button>
+				</form>
+
+			</div>
+		</section>
+
+		<p>
+			<a href="/staff/dashboard" class="nav-link">
+				&larr; Back to Dashboard
+			</a>
+		</p>
+	</main>
+
+	<footer class="footer">
+		<p>BookNest Library Management System</p>
+	</footer>
+</body>
+
+</html>

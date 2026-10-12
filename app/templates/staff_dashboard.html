@@ -15,6 +15,8 @@
     </a>
     <nav>
       <a href="/catalogue" class="nav-link">Catalogue</a>
+      <a href="/staff/books/new" class="nav-link">Add New Book</a>
+      <a href="/staff/reports" class="nav-link">Reports</a>
       <form action="/staff/logout" method="post">
         <button type="submit" class="nav-button">Log out</button>
       </form>
@@ -124,65 +126,6 @@
       </div>
     </section>
 
-    <section class="dashboard-section">
-      <h2>Overdue Loans</h2>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Loan ID</th>
-              <th>Member</th>
-              <th>Book</th>
-              <th>Branch</th>
-              <th>Due date</th>
-              <th>Days overdue</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for loan in overdue_loans %}
-            <tr>
-              <td>{{ loan.loan_id }}</td>
-              <td>{{ loan.member_name }}</td>
-              <td>{{ loan.book_title }}</td>
-              <td>{{ loan.branch_name }}</td>
-              <td>{{ loan.due_date }}</td>
-              <td><span class="status overdue">{{ loan.overdue_days }}</span></td>
-            </tr>
-            {% else %}
-            <tr>
-              <td colspan="6">No overdue loans.</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="dashboard-section">
-      <h2>Most Borrowed Books</h2>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Book</th>
-              <th>Total checkouts</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for book in popular_books %}
-            <tr>
-              <td>{{ book.title }}</td>
-              <td>{{ book.borrow_count }}</td>
-            </tr>
-            {% else %}
-            <tr>
-              <td colspan="2">No borrowing data available.</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </section>
   </main>
 
   <footer class="footer">

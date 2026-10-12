@@ -1,4 +1,4 @@
-from app.database import fetch_all, fetch_one
+from app.database import fetch_all, fetch_one, get_connection
 
 
 def get_all_books():
@@ -41,13 +41,28 @@ def get_book_by_id(book_id):
 
 
 
-def create_book(title, isbn=None, publication_year=None):
+
+def create_book(title, isbn, publication_year):
+	title = title.strip() if title else ""
+	isbn = isbn.strip() if isbn else ""
+
+	if not title:
+		raise ValueError("Book title is required.")
+
+	if not isbn:
+		raise ValueError("ISBN is required.")
+
+	if publication_year is None:
+		raise ValueError("Publication year is required.")
+
 	query = """
-		INSERT INTO books (title, isbn, publication_year)
-		VALUES (%s, %s, %s)
-		RETURNING book_id, title, isbn, publication_year
+			INSERT INTO books (title, isbn, publication_year)
+			VALUES (%s, %s, %s)
+			RETURNING book_id, title, isbn, publication_year
 	"""
 
 	return fetch_one(
-		query, (title, isbn, publication_year),
+		query,
+		(title, isbn, publication_year),
 	)
+

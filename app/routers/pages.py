@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from app.core.security import verify_password, hash_password
 from app.database import fetch_all
 
-from app.services.book_service import get_all_books
+from app.services.book_service import get_all_books, create_book
 from app.services.member_service import (
     create_member,
     get_member_by_email,
@@ -38,6 +38,8 @@ from app.services.fine_service import (
 from app.services.report_service import (
     get_overdue_loans,
     get_most_borrowed_books,
+    get_outstanding_fines,
+    get_copies_per_branch,
 )
 
 
@@ -466,5 +468,127 @@ def staff_return_book(request: Request, loan_id: int):
     f"/staff/dashboard?message={quote(message)}",
     status_code=303,
   )
+
+
+
+# STAFF BOOK MANAGEMENT
+
+@router.get("/staff/books/new", name="staff_new_book_page")
+def staff_new_book_page(request: Request):
+    staff = get_dashboard_staff(request)
+
+    if not staff:
+        return RedirectResponse("/staff/login", status_code=303)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="staff_new_book.html",
+        context={
+            "staff": staff,
+            "error": None,
+            "title": "",
+            "isbn": "",
+            "publication_year": "",
+        },
+    )
+
+# Staff member can create add a new book
+@router.post("/staff/books/new", name="staff_create_book")
+def staff_create_book(
+  request: Request,
+  title: str = Form(...),
+  isbn: str = Form(...),
+  publication_year: str = Form(...),
+):
+  staff = get_dashboard_staff(request)
+
+  if not staff:
+    return RedirectResponse("/staff/login", status_code=303)
+
+  title = title.strip()
+  isbn = isbn.strip()
+  publication_year = publication_year.strip()
+
+  error = None
+  year = None
+
+  if not title:
+    error = "Book title is required."
+  elif not isbn:
+    error = "ISBN is required."
+  elif len(title) > 255:
+    error = "Book title cannot exceed 255 characters."
+  elif len(isbn) > 20:
+    error = "ISBN cannot exceed 20 characters."
+
+  if error is None:
+    try:
+      year = int(publication_year)
+
+      if year < 1 or year > date.today().year:
+        error = "Enter a valid publication year."
+    except ValueError:
+      error = "Publication year must be a valid number."
+
+  context = {
+    "staff": staff,
+    "error": error,
+    "title": title,
+    "isbn": isbn,
+    "publication_year": publication_year,
+    "today_year": date.today().year,
+  }
+
+  if error:
+    return templates.TemplateResponse(
+      request=request,
+      name="staff_new_book.html",
+      context=context,
+      status_code=422,
+    )
+
+  try:
+    create_book(
+      title=title,
+      isbn=isbn,
+      publication_year=year,
+    )
+  except psycopg.errors.UniqueViolation:
+    context["error"] = "A book with this ISBN already exists."
+
+    return templates.TemplateResponse(
+      request=request,
+      name="staff_new_book.html",
+      context=context,
+      status_code=409,
+    )
+
+  return RedirectResponse(
+    "/staff/books/new?message=Book+created+successfully",
+    status_code=303,
+  )
+
+
+# Staff, reports page
+@router.get("/staff/reports", name="staff_reports")
+def staff_reports(request: Request):
+  staff = get_dashboard_staff(request)
+
+  if not staff:
+    return RedirectResponse("/staff/login", status_code=303)
+
+  return templates.TemplateResponse(
+    request=request,
+    name="staff_reports.html",
+    context={
+      "staff": staff,
+      "overdue_loans": get_overdue_loans(),
+      "popular_books": get_most_borrowed_books(10),
+      "outstanding_fines": get_outstanding_fines(),
+      "branch_copies": get_copies_per_branch(),
+    },
+  )
+
+
 
 
