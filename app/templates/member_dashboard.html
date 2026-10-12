@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard | BookNest</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="/catalogue" class="brand">
+      <span class="brand-icon">B</span> BookNest
+    </a>
+    <nav>
+      <a href="/catalogue" class="nav-link">Catalogue</a>
+      <form action="/members/logout" method="post">
+        <button type="submit" class="nav-button">Log out</button>
+      </form>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">YOUR BOOKNEST ACCOUNT</p>
+      <h1>Hello, <span>{{ member.name }}</span></h1>
+      <p class="hero-description">
+        Track your borrowed books, due dates and outstanding fines.
+      </p>
+    </section>
+
+    {% if message %}
+    <div class="success-message">{{ message }}</div>
+    {% endif %}
+
+    <section class="dashboard-section">
+      <h2>My Loans</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Branch</th>
+              <th>Borrowed</th>
+              <th>Due date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in loans %}
+            <tr>
+              <td>{{ loan.book_title }}</td>
+              <td>{{ loan.branch_name }}</td>
+              <td>{{ loan.checkout_date }}</td>
+              <td>{{ loan.due_date }}</td>
+              <td>
+                <span class="status {{ loan.status }}">
+                  {{ loan.status | title }}
+                </span>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5">You have no loan records yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>My Fines</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Fine</th>
+              <th>Paid</th>
+              <th>Outstanding</th>
+              <th>Status / Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fine in fines %}
+            <tr>
+              <td>{{ fine.book_title }}</td>
+              <td>₹{{ "%.2f"|format(fine.fine_amount) }}</td>
+              <td>₹{{ "%.2f"|format(fine.paid_amount) }}</td>
+              <td>₹{{ "%.2f"|format(fine.outstanding_amount) }}</td>
+              <td>
+                {% if fine.outstanding_amount > 0 %}
+                <form action="/members/me/fines/{{ fine.fine_id }}/payments" method="post" class="payment-form">
+                  <input type="number" name="amount" min="0.01" max="{{ fine.outstanding_amount }}" step="0.01"
+                    placeholder="Amount (₹)" required>
+                  <button type="submit" class="small-button">
+                    Pay
+                  </button>
+                </form>
+                {% else %}
+                <span class="status paid">Paid</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5">You have no fines. Happy reading!</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>BookNest Library Management System</p>
+  </footer>
+</body>
+
+</html>

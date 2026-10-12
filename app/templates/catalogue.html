@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BookNest | Book Catalogue</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="/catalogue" class="brand">
+      <span class="brand-icon">B</span>
+      BookNest
+    </a>
+
+    <nav>
+      <a href="/catalogue" class="nav-link active">Catalogue</a>
+      <a href="/members/login" class="nav-button">Member Login</a>
+      <a href="/staff/login" class="nav-button">Staff Login</a>
+      <a href="/docs" class="nav-link">API Docs</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
+      <h1>Find your next<br><span>great read.</span></h1>
+      <p class="hero-description">
+        Explore our collection of books across all three
+        BookNest library branches.
+      </p>
+
+      <div class="hero-stats">
+        <div>
+          <strong>{{ books | length }}</strong>
+          <span>Book titles</span>
+        </div>
+        <div>
+          <strong>3</strong>
+          <span>Library branches</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalogue-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">EXPLORE THE COLLECTION</p>
+          <h2>Our Books</h2>
+        </div>
+        <span class="result-count">
+          {{ books | length }} titles
+        </span>
+      </div>
+
+      <div class="book-grid">
+        {% for book in books %}
+        <article class="book-card">
+          <div class="book-cover">
+            <span class="cover-mark">B</span>
+            <span class="cover-label">BOOKNEST LIBRARY</span>
+            <h3>{{ book.title }}</h3>
+            <span class="cover-bottom">DISCOVER • READ • GROW</span>
+          </div>
+
+          <div class="book-info">
+            <h3>{{ book.title }}</h3>
+
+            <p class="book-meta">
+              {% if book.publication_year %}
+              Published {{ book.publication_year }}
+              {% else %}
+              Publication year unavailable
+              {% endif %}
+            </p>
+
+            <p class="book-meta">
+              ISBN: {{ book.isbn or "Not available" }}
+            </p>
+
+            <div class="availability">
+              <span>
+                {{ book.available_copies }}
+                available
+              </span>
+              <span class="total-copies">
+                of {{ book.total_copies }} copies
+              </span>
+            </div>
+          </div>
+        </article>
+        {% else %}
+        <div class="empty-state">
+          <h3>No books found</h3>
+          <p>The catalogue is empty. Please check back later.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>BookNest Library Management System</p>
+    <p>Built with FastAPI, PostgreSQL and Jinja2</p>
+  </footer>
+</body>
+
+</html>

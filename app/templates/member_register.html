@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | BookNest</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="/catalogue" class="brand">
+      <span class="brand-icon">B</span>
+      BookNest
+    </a>
+
+    <nav>
+      <a href="/catalogue" class="nav-link">Catalogue</a>
+      <a href="/members/login" class="nav-link">Member Login</a>
+      <a href="/staff/login" class="nav-link">Staff Login</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="login-panel">
+      <p class="eyebrow">JOIN BOOKNEST</p>
+      <h1>Create Account</h1>
+
+      <p class="hero-description">
+        Create your member account to track borrowed books,
+        due dates and library fines.
+      </p>
+
+      {% if error %}
+      <div class="error-message">{{ error }}</div>
+      {% endif %}
+
+      <form action="/members/register" method="post" class="member-form">
+        <label for="name">Full name</label>
+        <input id="name" type="text" name="name" minlength="1" maxlength="150" autocomplete="name"
+          value="{{ name or '' }}" required>
+
+        <label for="email">Email address</label>
+        <input id="email" type="email" name="email" maxlength="254" autocomplete="email" value="{{ email or '' }}"
+          required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" minlength="8" maxlength="128" autocomplete="new-password"
+          required>
+
+        <p class="form-hint">
+          Use a password between 8 and 128 characters.
+        </p>
+
+        <button type="submit" class="form-button">
+          Create Account
+        </button>
+      </form>
+
+      <p class="form-note">
+        Already have an account?
+        <a href="/members/login">Sign in</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>BookNest Library Management System</p>
+    <p>Built with FastAPI, PostgreSQL and Jinja2</p>
+  </footer>
+</body>
+
+</html>

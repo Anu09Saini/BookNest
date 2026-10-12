@@ -1,0 +1,26 @@
+SELECT
+    l.loan_id,
+    m.name AS member_name,
+    m.email,
+    b.title AS book_title,
+    br.name AS branch_name,
+    l.checkout_date,
+    l.due_date,
+    CURRENT_DATE - l.due_date AS days_overdue
+FROM loans AS l
+JOIN members AS m
+    ON m.member_id = l.member_id
+JOIN book_copies AS cp
+    ON cp.copy_id = l.copy_id
+JOIN books AS b
+    ON b.book_id = cp.book_id
+JOIN branches AS br
+    ON br.branch_id = cp.branch_id
+WHERE l.return_date IS NULL
+  AND l.due_date < CURRENT_DATE
+ORDER BY l.due_date ASC;
+
+
+
+
+

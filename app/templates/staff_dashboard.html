@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librarian Dashboard | BookNest</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="/catalogue" class="brand">
+      <span class="brand-icon">B</span> BookNest
+    </a>
+    <nav>
+      <a href="/catalogue" class="nav-link">Catalogue</a>
+      <form action="/staff/logout" method="post">
+        <button type="submit" class="nav-button">Log out</button>
+      </form>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">LIBRARY OPERATIONS</p>
+      <h1>Welcome, <span>{{ staff.name }}</span></h1>
+      <p class="hero-description">
+        Manage book circulation and monitor library activity.
+      </p>
+
+      <div class="hero-stats">
+        <div>
+          <strong>{{ available_copies | length }}</strong>
+          <span>Available copies</span>
+        </div>
+        <div>
+          <strong>{{ members | length }}</strong>
+          <span>Members</span>
+        </div>
+        <div>
+          <strong>{{ overdue_loans | length }}</strong>
+          <span>Overdue loans</span>
+        </div>
+      </div>
+    </section>
+
+    {% if message %}
+    <div class="success-message">{{ message }}</div>
+    {% endif %}
+
+    <section class="dashboard-section">
+      <h2>Check Out a Book</h2>
+      <div class="staff-form-card">
+        <form action="/staff/loans/checkout" method="post" class="member-form">
+          <label for="member_id">Member</label>
+          <select id="member_id" name="member_id" required>
+            <option value="">Choose a member</option>
+            {% for member in members %}
+            <option value="{{ member.member_id }}">
+              {{ member.name }} — {{ member.email }}
+            </option>
+            {% endfor %}
+          </select>
+
+          <label for="copy_id">Available book copy</label>
+          <select id="copy_id" name="copy_id" required>
+            <option value="">Choose a copy</option>
+            {% for copy in available_copies %}
+            <option value="{{ copy.copy_id }}">
+              {{ copy.title }} — {{ copy.branch_name }}
+              (Copy {{ copy.copy_id }})
+            </option>
+            {% endfor %}
+          </select>
+
+          <label for="due_date">Due date</label>
+          <input id="due_date" type="date" name="due_date" min="{{ today }}" value="{{ default_due_date }}" required>
+
+          <button type="submit" class="form-button">
+            Check Out Book
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Active Loans</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Member</th>
+              <th>Book</th>
+              <th>Branch</th>
+              <th>Due date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in active_loans %}
+            <tr>
+              <td>{{ loan.loan_id }}</td>
+              <td>{{ loan.member_name }}</td>
+              <td>{{ loan.book_title }}</td>
+              <td>{{ loan.branch_name }}</td>
+              <td>{{ loan.due_date }}</td>
+              <td>
+                <form action="/staff/loans/{{ loan.loan_id }}/return" method="post">
+                  <button type="submit" class="small-button">
+                    Return
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6">There are no active loans.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Overdue Loans</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Member</th>
+              <th>Book</th>
+              <th>Branch</th>
+              <th>Due date</th>
+              <th>Days overdue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in overdue_loans %}
+            <tr>
+              <td>{{ loan.loan_id }}</td>
+              <td>{{ loan.member_name }}</td>
+              <td>{{ loan.book_title }}</td>
+              <td>{{ loan.branch_name }}</td>
+              <td>{{ loan.due_date }}</td>
+              <td><span class="status overdue">{{ loan.overdue_days }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6">No overdue loans.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Most Borrowed Books</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Total checkouts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in popular_books %}
+            <tr>
+              <td>{{ book.title }}</td>
+              <td>{{ book.borrow_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="2">No borrowing data available.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>BookNest Library Management System</p>
+  </footer>
+</body>
+
+</html>

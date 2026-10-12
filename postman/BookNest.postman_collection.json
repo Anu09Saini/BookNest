@@ -1,0 +1,608 @@
+{
+  "info": {
+    "_postman_id": "9e7a1c34-2e4d-4a8a-a82a-7a3d8c5f0b21",
+    "name": "BookNest API",
+    "description": "BookNest API workflows: member JWT, staff session cookie, and partner API key/secret. Set collection variables before use.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "member_email",
+      "value": "testmember@example.com"
+    },
+    {
+      "key": "member_password",
+      "value": "Testmember1"
+    },
+    {
+      "key": "member_token",
+      "value": ""
+    },
+    {
+      "key": "staff_email",
+      "value": "neha.staff@example.com"
+    },
+    {
+      "key": "staff_password",
+      "value": "nehastaff"
+    },
+    {
+      "key": "partner_api_key",
+      "value": "bn_live_LPk02ehW5_V-tybm7CJDKNBP8YYJQTQK"
+    },
+    {
+      "key": "partner_api_secret",
+      "value": "OtJlp7w2OGDl8yQ8FoZ7SuOMd9yLSuDyPGFJkr6iVGPe3reWIeBFXppFcuh-DJCn"
+    },
+    {
+      "key": "book_id",
+      "value": "1"
+    },
+    {
+      "key": "member_id",
+      "value": "1"
+    },
+    {
+      "key": "copy_id",
+      "value": "1"
+    },
+    {
+      "key": "loan_id",
+      "value": "1"
+    },
+    {
+      "key": "fine_id",
+      "value": "1"
+    },
+    {
+      "key": "due_date",
+      "value": "2026-10-26"
+    },
+    {
+      "key": "payment_amount",
+      "value": "5.00"
+    }
+  ],
+  "item": [
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "List books",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/books/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get book by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/books/{{book_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books",
+                "{{book_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create book",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/books/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "books"
+              ]
+            },
+            "description": "Write operation. Use a unique ISBN each time.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"BookNest Postman Sample\",\n  \"isbn\": \"BN-POSTMAN-2026-001\",\n  \"publication_year\": 2026\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Member",
+      "item": [
+        {
+          "name": "Register member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/members/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members"
+              ]
+            },
+            "description": "Creates a member. Change email if already registered.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Member\",\n  \"email\": \"postman-member@example.com\",\n  \"password\": \"ReplaceThisPassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Member login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/member/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "member",
+                "login"
+              ]
+            },
+            "description": "Copy access_token from response into member_token.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{member_email}}\",\n  \"password\": \"{{member_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Current member",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/members/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My loans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/members/me/loans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members",
+                "me",
+                "loans"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My fines",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/members/me/fines",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members",
+                "me",
+                "fines"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pay a fine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/fines/{{fine_id}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fines",
+                "{{fine_id}}",
+                "payments"
+              ]
+            },
+            "description": "Use a fine owned by this member. Amount must not exceed outstanding balance.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": {{payment_amount}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff session",
+      "item": [
+        {
+          "name": "Staff login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/staff/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "staff",
+                "login"
+              ]
+            },
+            "description": "Postman should retain the session cookie for the same host.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{staff_email}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Current staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "staff",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Checkout book",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/loans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "loans"
+              ]
+            },
+            "description": "Requires staff session, active member, and available copy.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": {{member_id}},\n  \"copy_id\": {{copy_id}},\n  \"due_date\": \"{{due_date}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Return loan",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/loans/{{loan_id}}/return",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "loans",
+                "{{loan_id}}",
+                "return"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Staff logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/staff/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "staff",
+                "logout"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Overdue loans report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reports/overdue-loans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "overdue-loans"
+              ]
+            },
+            "description": "Requires librarian/admin staff session."
+          }
+        },
+        {
+          "name": "Most borrowed books",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reports/most-borrowed-books?limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "most-borrowed-books"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Requires librarian/admin staff session."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partner API",
+      "item": [
+        {
+          "name": "Partner book catalogue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{partner_api_key}}"
+              },
+              {
+                "key": "X-API-Secret",
+                "value": "{{partner_api_secret}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/partner/catalogue/books",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "partner",
+                "catalogue",
+                "books"
+              ]
+            },
+            "description": "Requires active partner credentials."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Browser UI",
+      "item": [
+        {
+          "name": "Public catalogue page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/catalogue",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "catalogue"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member login page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/members/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Member dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/members/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "members",
+                "dashboard"
+              ]
+            },
+            "description": "Requires browser member session."
+          }
+        },
+        {
+          "name": "Staff login page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "staff",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Staff dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "staff",
+                "dashboard"
+              ]
+            },
+            "description": "Requires browser staff session."
+          }
+        }
+      ]
+    }
+  ]
+}
