@@ -180,8 +180,8 @@ scripts/booknest_curl.sh member-fines
 Partner workflow:
 
 ```bash
-export BOOKNEST_PARTNER_API_KEY='bn_live_LPk02ehW5_V-tybm7CJDKNBP8YYJQTQK'
-export BOOKNEST_PARTNER_API_SECRET='OtJlp7w2OGDl8yQ8FoZ7SuOMd9yLSuDyPGFJkr6iVGPe3reWIeBFXppFcuh-DJCn'
+export BOOKNEST_PARTNER_API_KEY=replace_with_generated_api_key
+export BOOKNEST_PARTNER_API_SECRET=replace_with_generated_api_secret
 scripts/booknest_curl.sh partner-books
 ```
 
