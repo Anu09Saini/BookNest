@@ -67,7 +67,6 @@ psql -d library_db -f sql/schema.sql
 psql -d library_db -f sql/seed.sql
 ```
 
-**Warning:** inspect `sql/seed.sql` first. It may truncate tables and reset IDs. Never run it against data you need to preserve.
 
 Create `.env` from `.env.example` and fill in your local values. Typical variables:
 
@@ -92,6 +91,7 @@ uvicorn app.main:app --reload
 ## Browser pages and API docs
 
 - Public catalogue: http://127.0.0.1:8000/catalogue
+- New Member setup: http://127.0.0.1:8000/members/register
 - Member login: http://127.0.0.1:8000/members/login
 - Member dashboard: http://127.0.0.1:8000/members/dashboard
 - Staff login: http://127.0.0.1:8000/staff/login
@@ -128,7 +128,7 @@ Use `/docs` for the exact schemas and status codes in the running version.
 Member login returns a JWT. Send it on protected API requests:
 
 ```http
-Authorization: Bearer YOUR_ACCESS_TOKEN
+Authorization: Bearer (Enter_Access_token)
 ```
 
 ### Staff API
